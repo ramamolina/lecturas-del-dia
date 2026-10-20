@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#2e6a43">
+<meta name="description" content="Lecturas de la misa de cada día, listas para mandar por WhatsApp.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icono-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Lecturas">
+<title>Lecturas del Día</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400;1,7..72,500&display=swap">
+<style>
+/* Layout: una columna de lectura (65ch) con la fecha arriba, el color litúrgico del día como acento, y la barra de envío fija abajo. */
+:root {
+  --bg: #f6f6f3;
+  --surface: #ffffff;
+  --ink: #1c1d21;
+  --muted: #5c5f68;
+  --rule: #dddee2;
+  --send: #0f7a45;
+  --send-ink: #ffffff;
+  --lit-verde: #2e6a43;
+  --lit-blanco: #94741a;
+  --lit-rojo: #a3262e;
+  --lit-morado: #5d3d86;
+  --lit-rosa: #b0476f;
+  --acc: var(--lit-verde);
+  --f-text: "Literata", Georgia, "Times New Roman", serif;
+  --f-ui: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131417; --surface: #1b1d21; --ink: #ebeae6; --muted: #a2a4ab; --rule: #2d3036;
+    --send: #2ea865; --send-ink: #07130c;
+    --lit-verde: #74b98c; --lit-blanco: #d9b95c; --lit-rojo: #e2747c; --lit-morado: #b89de0; --lit-rosa: #e69ab8;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131417; --surface: #1b1d21; --ink: #ebeae6; --muted: #a2a4ab; --rule: #2d3036;
+  --send: #2ea865; --send-ink: #07130c;
+  --lit-verde: #74b98c; --lit-blanco: #d9b95c; --lit-rojo: #e2747c; --lit-morado: #b89de0; --lit-rosa: #e69ab8;
+  color-scheme: dark;
+}
+[data-color="verde"] { --acc: var(--lit-verde); }
+[data-color="blanco"] { --acc: var(--lit-blanco); }
+[data-color="rojo"] { --acc: var(--lit-rojo); }
+[data-color="morado"] { --acc: var(--lit-morado); }
+[data-color="rosa"] { --acc: var(--lit-rosa); }
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-ui);
+  font-size: 16px;
+  line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding-block: 20px calc(132px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Encabezado y fecha */
+.eyebrow {
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+  margin: 0;
+}
+.cabecera { display: flex; flex-direction: column; gap: 12px; }
+h1 {
+  font-family: var(--f-text);
+  font-weight: 600;
+  font-size: clamp(1.75rem, 6vw, 2.25rem);
+  line-height: 1.15;
+  margin: 0;
+  text-wrap: balance;
+}
+h1 .anio { color: var(--muted); font-weight: 400; }
+.nav {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+.nav .flecha { font-size: 1.4rem; width: 48px; padding: 0; }
+#hoy { grid-column: 1 / -1; justify-self: start; }
+.btn {
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  min-height: 44px;
+  padding: 0 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+}
+.btn:hover { border-color: var(--muted); }
+.btn:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid var(--acc); outline-offset: 2px; }
+.btn[disabled] { opacity: 0.45; cursor: default; }
+#fecha {
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  min-height: 44px;
+  padding: 0 10px;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Celebración del día */
+.celebracion {
+  border-top: 4px solid var(--acc);
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.color {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--acc);
+}
+.color::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--acc);
+}
+.nombre {
+  font-family: var(--f-text);
+  font-style: italic;
+  font-size: 1.3rem;
+  line-height: 1.3;
+  margin: 0;
+  text-wrap: balance;
+}
+.memorias { margin: 0; color: var(--muted); font-size: 0.92rem; }
+
+/* Lecturas */
+.lecturas { display: flex; flex-direction: column; gap: 36px; }
+.lectura { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.rol {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--acc);
+}
+.cita {
+  margin: 0;
+  font-family: var(--f-text);
+  font-weight: 600;
+  font-size: 1.15rem;
+}
+.texto {
+  margin: 0;
+  font-family: var(--f-text);
+  font-size: 1.12rem;
+  line-height: 1.7;
+  max-width: 65ch;
+  overflow-wrap: break-word;
+}
+.salmo .texto { white-space: pre-line; line-height: 1.6; padding-left: 14px; border-left: 2px solid var(--rule); }
+
+.aviso {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.aviso h2 { margin: 0; font-family: var(--f-text); font-size: 1.2rem; font-weight: 600; text-wrap: balance; }
+.aviso p { margin: 0; color: var(--muted); }
+
+.fuente {
+  border-top: 1px solid var(--rule);
+  padding-top: 16px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.fuente p { margin: 0; }
+
+/* Barra de envío fija */
+.barra {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg);
+  border-top: 1px solid var(--rule);
+  padding-top: 12px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  z-index: 5;
+}
+.barra-in {
+  max-width: 40rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.acciones { display: flex; gap: 8px; }
+.enviar {
+  flex: 1 1 auto;
+  background: var(--send);
+  color: var(--send-ink);
+  border-color: var(--send);
+  font-size: 1.05rem;
+  min-height: 52px;
+  border-radius: 12px;
+}
+.enviar:hover { border-color: var(--send); filter: brightness(1.06); }
+.enviar[aria-disabled="true"] { opacity: 0.45; pointer-events: none; }
+.copiar { min-height: 52px; border-radius: 12px; flex: 0 0 auto; }
+.ayuda { margin: 0; font-size: 0.82rem; color: var(--muted); text-align: center; min-height: 1.2em; }
+.ayuda.ok { color: var(--send); font-weight: 700; }
+
+/* Copia manual (si el navegador no deja copiar) */
+.manual { display: flex; flex-direction: column; gap: 8px; }
+.manual textarea {
+  width: 100%;
+  min-height: 9rem;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lecturas { animation: entra 220ms ease-out; }
+  @keyframes entra { from { opacity: 0.4; } to { opacity: 1; } }
+}
+</style>
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; -webkit-text-size-adjust: 100%; }
+img { max-width: 100%; }
+</style>
+</head>
+<body>
+
+<div class="wrap" id="app" data-color="verde">
+  <header class="cabecera">
+    <p class="eyebrow">Lecturas de la misa</p>
+    <h1 id="titulo">Lunes 19 de octubre <span class="anio">2026</span></h1>
+    <div class="nav">
+      <button class="btn flecha" id="ant" type="button" aria-label="Día anterior" title="Día anterior">‹</button>
+      <input type="date" id="fecha" aria-label="Elegir fecha">
+      <button class="btn flecha" id="sig" type="button" aria-label="Día siguiente" title="Día siguiente">›</button>
+      <button class="btn" id="hoy" type="button" hidden>Volver a hoy</button>
+    </div>
+  </header>
+
+  <section class="celebracion" id="celebracion" aria-live="polite">
+    <span class="color" id="color">Verde</span>
+    <p class="nombre" id="nombre">Cargando lecturas…</p>
+    <p class="memorias" id="memorias" hidden></p>
+  </section>
+
+  <main class="lecturas" id="lecturas"></main>
+
+  <footer class="fuente">
+    <p>Texto bíblico: <em>El Libro del Pueblo de Dios</em>, traducción argentina aprobada para la liturgia (publicado en vatican.va).</p>
+    <p>Qué lecturas van cada día: Calendario litúrgico de la Conferencia Episcopal Argentina. <span id="rango"></span></p>
+  </footer>
+</div>
+
+<div class="barra">
+  <div class="barra-in">
+    <div class="manual" id="manual" hidden>
+      <p class="ayuda">Mantené apretado el texto, elegí «Seleccionar todo» y después «Copiar».</p>
+      <textarea id="textoManual" readonly></textarea>
+      <button class="btn" type="button" id="cerrarManual">Listo</button>
+    </div>
+    <div class="acciones">
+      <a class="btn enviar" id="enviar" target="_blank" rel="noopener" aria-disabled="true">Enviar por WhatsApp</a>
+      <button class="btn copiar" id="copiar" type="button" disabled>Copiar</button>
+    </div>
+    <p class="ayuda" id="ayuda">En WhatsApp elegís a quién mandarlo, o a vos mismo.</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  var DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+  var MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto',
+    'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  var COLORES = { verde: 'Verde', blanco: 'Blanco', rojo: 'Rojo', morado: 'Morado', rosa: 'Rosa' };
+  var AYUDA = 'En WhatsApp elegís a quién mandarlo, o a vos mismo.';
+
+  var $ = function (id) { return document.getElementById(id); };
+  var datos = null;
+  var mensaje = '';
+
+  function aTexto(d) {
+    var m = String(d.getMonth() + 1).padStart(2, '0');
+    var dd = String(d.getDate()).padStart(2, '0');
+    return d.getFullYear() + '-' + m + '-' + dd;
+  }
+  function aFecha(s) {
+    var p = s.split('-').map(Number);
+    return new Date(p[0], p[1] - 1, p[2]);
+  }
+  function hoy() { return aTexto(new Date()); }
+  function mover(s, n) {
+    var d = aFecha(s);
+    d.setDate(d.getDate() + n);
+    return aTexto(d);
+  }
+  function larga(s) {
+    var d = aFecha(s);
+    return DIAS[d.getDay()] + ' ' + d.getDate() + ' de ' + MESES[d.getMonth()] + ' de ' + d.getFullYear();
+  }
+  function corta(s) {
+    var d = aFecha(s);
+    return d.getDate() + ' de ' + MESES[d.getMonth()] + ' de ' + d.getFullYear();
+  }
+  function mayus(t) { return t.charAt(0).toUpperCase() + t.slice(1); }
+
+  var fecha = hoy();
+
+  function armarMensaje(f, dia) {
+    var partes = ['*Lecturas del ' + larga(f) + '*', '_' + dia.c + '_', ''];
+    dia.l.forEach(function (l) {
+      partes.push('*' + l[0] + '* — ' + l[1]);
+      partes.push(l[2]);
+      partes.push('');
+    });
+    partes.push('_Texto bíblico: El Libro del Pueblo de Dios_');
+    return partes.join('\n');
+  }
+
+  function aviso(titulo, texto) {
+    var box = document.createElement('div');
+    box.className = 'aviso';
+    var h = document.createElement('h2');
+    h.textContent = titulo;
+    var p = document.createElement('p');
+    p.textContent = texto;
+    box.appendChild(h);
+    box.appendChild(p);
+    return box;
+  }
+
+  function habilitarEnvio(si) {
+    var a = $('enviar');
+    if (si) {
+      a.setAttribute('href', 'https://wa.me/?text=' + encodeURIComponent(mensaje));
+      a.setAttribute('aria-disabled', 'false');
+    } else {
+      a.removeAttribute('href');
+      a.setAttribute('aria-disabled', 'true');
+    }
+    $('copiar').disabled = !si;
+    var ayuda = $('ayuda');
+    ayuda.classList.remove('ok');
+    ayuda.textContent = si && mensaje.length > 6000
+      ? 'Texto largo: si WhatsApp abre vacío, tocá Copiar y pegalo.'
+      : AYUDA;
+    $('manual').hidden = true;
+  }
+
+  function render() {
+    var d = aFecha(fecha);
+    var h1 = $('titulo');
+    h1.textContent = mayus(DIAS[d.getDay()]) + ' ' + d.getDate() + ' de ' + MESES[d.getMonth()] + ' ';
+    var anio = document.createElement('span');
+    anio.className = 'anio';
+    anio.textContent = d.getFullYear();
+    h1.appendChild(anio);
+    $('fecha').value = fecha;
+    $('hoy').hidden = fecha === hoy();
+
+    var lista = $('lecturas');
+    lista.textContent = '';
+    if (!datos) return;
+
+    $('ant').disabled = fecha <= datos.desde;
+    $('sig').disabled = fecha >= datos.hasta;
+
+    var dia = datos.dias[fecha];
+    var app = $('app');
+    if (!dia) {
+      app.setAttribute('data-color', 'verde');
+      $('color').hidden = true;
+      $('nombre').textContent = 'Sin lecturas cargadas';
+      $('memorias').hidden = true;
+      lista.appendChild(aviso(
+        'Todavía no están cargadas las lecturas de esta fecha',
+        'La app tiene lecturas del ' + corta(datos.desde) + ' al ' + corta(datos.hasta) +
+        '. Las del año siguiente se agregan cuando la Conferencia Episcopal Argentina publique su calendario.'
+      ));
+      mensaje = '';
+      habilitarEnvio(false);
+      return;
+    }
+
+    app.setAttribute('data-color', dia.k);
+    $('color').hidden = false;
+    $('color').textContent = 'Color litúrgico: ' + (COLORES[dia.k] || dia.k);
+    $('nombre').textContent = dia.c;
+    if (dia.m && dia.m.length) {
+      $('memorias').textContent = 'Memoria libre: ' + dia.m.join(' · ');
+      $('memorias').hidden = false;
+    } else {
+      $('memorias').hidden = true;
+    }
+
+    if (!dia.l.length) {
+      lista.appendChild(aviso(
+        'Hoy no hay misa durante el día',
+        'El Sábado Santo la Iglesia no celebra misa hasta la Vigilia Pascual, a la noche. Pasá al día siguiente para ver las lecturas del Domingo de Pascua.'
+      ));
+      mensaje = '';
+      habilitarEnvio(false);
+      return;
+    }
+
+    dia.l.forEach(function (l) {
+      var art = document.createElement('article');
+      art.className = 'lectura' + (l[0] === 'Salmo' || l[0] === 'Cántico' ? ' salmo' : '');
+      var rol = document.createElement('p');
+      rol.className = 'rol';
+      rol.textContent = l[0];
+      var cita = document.createElement('h2');
+      cita.className = 'cita';
+      cita.textContent = l[1];
+      var texto = document.createElement('p');
+      texto.className = 'texto';
+      texto.textContent = l[2];
+      art.appendChild(rol);
+      art.appendChild(cita);
+      art.appendChild(texto);
+      lista.appendChild(art);
+    });
+
+    mensaje = armarMensaje(fecha, dia);
+    habilitarEnvio(true);
+  }
+
+  function ir(f) {
+    if (!f) return;
+    fecha = f;
+    render();
+    window.scrollTo(0, 0);
+  }
+
+  $('ant').addEventListener('click', function () { ir(mover(fecha, -1)); });
+  $('sig').addEventListener('click', function () { ir(mover(fecha, 1)); });
+  $('hoy').addEventListener('click', function () { ir(hoy()); });
+  $('fecha').addEventListener('change', function (e) { ir(e.target.value); });
+
+  $('copiar').addEventListener('click', function () {
+    if (!mensaje) return;
+    var ayuda = $('ayuda');
+    function manual() {
+      $('textoManual').value = mensaje;
+      $('manual').hidden = false;
+      $('textoManual').focus();
+      $('textoManual').select();
+    }
+    try {
+      navigator.clipboard.writeText(mensaje).then(function () {
+        ayuda.textContent = 'Copiado. Abrí WhatsApp y pegalo en el chat que quieras.';
+        ayuda.classList.add('ok');
+      }, manual);
+    } catch (err) {
+      manual();
+    }
+  });
+  $('cerrarManual').addEventListener('click', function () { $('manual').hidden = true; });
+
+  render();
+  fetch('lecturas.json')
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (j) {
+      datos = j;
+      $('rango').textContent = 'Cargado del ' + corta(j.desde) + ' al ' + corta(j.hasta) + '.';
+      render();
+    })
+    .catch(function () {
+      $('nombre').textContent = 'No se pudieron cargar las lecturas';
+      $('lecturas').appendChild(aviso(
+        'No se pudieron cargar las lecturas',
+        'Revisá la conexión a internet y volvé a abrir la página.'
+      ));
+    });
+})();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+}
+</script>
+</body>
+</html>
