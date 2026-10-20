@@ -26,6 +26,13 @@ def titulo_mayus(t):
     return ' '.join(p if (i and p in CHICAS) else p[:1].upper() + p[1:] for i, p in enumerate(palabras))
 
 
+def cristo_rey(anio):
+    """Domingo de Jesucristo Rey: el anterior al 1º de Adviento (34º semana durante el año)."""
+    navidad = datetime.date(anio, 12, 25)
+    adviento4 = navidad - datetime.timedelta(days=(navidad.weekday() + 1) % 7 or 7)
+    return adviento4 - datetime.timedelta(days=28)
+
+
 def es_nombre(t):
     return t and not re.match(r'^(Por la|A partir|Este año|Hoy|Lecturas|Misa)', t)
 
@@ -46,7 +53,18 @@ for fecha in sorted(r):
     memorias = []
     m_dom = re.match(r'^(\d+)º (DURANTE EL AÑO|DE CUARESMA|DE PASCUA|DE ADVIENTO)$', t0)
     if d.weekday() == 6:
-        semana = (int(m_dom.group(1)), TIEMPOS[m_dom.group(2)]) if m_dom else None
+        if m_dom:
+            semana = (int(m_dom.group(1)), TIEMPOS[m_dom.group(2)])
+        elif 'BAUTISMO' in ' '.join(t).upper():
+            semana = (1, 'durante el año')  # tras el Bautismo del Señor empieza la 1ª semana
+        elif semana and semana[1] == 'de Pascua' and 'PENTECOST' in ' '.join(t).upper():
+            semana = (34 - (cristo_rey(d.year) - d).days // 7, 'durante el año')
+        elif re.search(r'(\d+)º DOMINGO DE PASCUA', ' '.join(t)):
+            semana = (int(re.search(r'(\d+)º DOMINGO DE PASCUA', ' '.join(t)).group(1)), 'de Pascua')
+        elif semana:
+            semana = (semana[0] + 1, semana[1])  # domingo ocupado por una solemnidad (ej. Ascensión, Trinidad)
+        else:
+            semana = None
     if m_dom:
         nombre = f'{m_dom.group(1)}º domingo {TIEMPOS[m_dom.group(2)]}'
     elif t0 == 'SANTO':
@@ -60,6 +78,10 @@ for fecha in sorted(r):
             nombre = f'{dia} después de Ceniza'
         elif semana:
             nombre = f'{dia} de la {semana[0]}ª semana {semana[1]}'
+        elif d.month == 1 and d.day >= 7:
+            nombre = f'{dia} después de Epifanía'
+        elif d.month in (1, 12):
+            nombre = f'{dia} del tiempo de Navidad'
         else:
             nombre = f'{dia} (feria)'
         memorias = [titulo_mayus(s.strip('[] ')) for s in resto]

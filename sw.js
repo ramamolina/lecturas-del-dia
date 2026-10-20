@@ -1,7 +1,7 @@
 // Guarda la app en el celular para que funcione sin conexión.
 // Cambiar VERSION cada vez que se actualizan las lecturas o la página.
-const VERSION = 'lecturas-v1';
-const ARCHIVOS = ['./', './index.html', './lecturas.json', './manifest.json', './icono-192.png', './icono-512.png', './apple-touch-icon.png'];
+const VERSION = 'lecturas-v2';
+const ARCHIVOS = ['./', './index.html', './lecturas.json', './manifest.json', './icono-celeste-192.png', './icono-celeste-512.png', './apple-touch-icon-celeste.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(VERSION).then((c) => c.addAll(ARCHIVOS)).then(() => self.skipWaiting()));

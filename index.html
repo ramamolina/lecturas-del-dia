@@ -7,8 +7,8 @@
 <meta name="theme-color" content="#2e6a43">
 <meta name="description" content="Lecturas de la misa de cada día, listas para mandar por WhatsApp.">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" href="icono-192.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icono-celeste-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon-celeste.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Lecturas">
 <title>Lecturas del Día</title>
@@ -121,18 +121,41 @@ h1 .anio { color: var(--muted); font-weight: 400; }
 .btn:hover { border-color: var(--muted); }
 .btn:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid var(--acc); outline-offset: 2px; }
 .btn[disabled] { opacity: 0.45; cursor: default; }
-#fecha {
-  font: inherit;
-  font-size: 0.95rem;
+/* El selector de fecha del celular queda invisible encima: se ve la fecha en formato dd/mmm/aaaa */
+.selector {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
   color: var(--ink);
   background: var(--surface);
   border: 1px solid var(--rule);
   border-radius: 10px;
   min-height: 44px;
-  padding: 0 10px;
+  padding: 0 12px;
   width: 100%;
   min-width: 0;
+  cursor: pointer;
 }
+.selector:focus-within { outline: 3px solid var(--acc); outline-offset: 2px; }
+.selector svg { flex: 0 0 auto; color: var(--muted); }
+#fecha {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  font-size: 16px;
+}
+#fecha::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer; }
 
 /* Celebración del día */
 .celebracion {
@@ -289,7 +312,11 @@ img { max-width: 100%; }
     <h1 id="titulo">Lunes 19 de octubre <span class="anio">2026</span></h1>
     <div class="nav">
       <button class="btn flecha" id="ant" type="button" aria-label="Día anterior" title="Día anterior">‹</button>
-      <input type="date" id="fecha" aria-label="Elegir fecha">
+      <label class="selector">
+        <span id="fechaVisible">19/oct/2026</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        <input type="date" id="fecha" aria-label="Elegir fecha">
+      </label>
       <button class="btn flecha" id="sig" type="button" aria-label="Día siguiente" title="Día siguiente">›</button>
       <button class="btn" id="hoy" type="button" hidden>Volver a hoy</button>
     </div>
@@ -413,6 +440,8 @@ img { max-width: 100%; }
     anio.textContent = d.getFullYear();
     h1.appendChild(anio);
     $('fecha').value = fecha;
+    $('fechaVisible').textContent = String(d.getDate()).padStart(2, '0') + '/' +
+      MESES[d.getMonth()].slice(0, 3) + '/' + d.getFullYear();
     $('hoy').hidden = fecha === hoy();
 
     var lista = $('lecturas');
@@ -493,6 +522,9 @@ img { max-width: 100%; }
   $('sig').addEventListener('click', function () { ir(mover(fecha, 1)); });
   $('hoy').addEventListener('click', function () { ir(hoy()); });
   $('fecha').addEventListener('change', function (e) { ir(e.target.value); });
+  $('fecha').addEventListener('click', function (e) {
+    try { if (e.target.showPicker) e.target.showPicker(); } catch (err) {}
+  });
 
   $('copiar').addEventListener('click', function () {
     if (!mensaje) return;
