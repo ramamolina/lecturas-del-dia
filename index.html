@@ -23,8 +23,9 @@
   --ink: #1c1d21;
   --muted: #5c5f68;
   --rule: #dddee2;
-  --send: #0f7a45;
-  --send-ink: #ffffff;
+  --send: #6cace4;
+  --send-ink: #10233f;
+  --ok: #1d6a9e;
   --lit-verde: #2e6a43;
   --lit-blanco: #94741a;
   --lit-rojo: #a3262e;
@@ -37,14 +38,14 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #131417; --surface: #1b1d21; --ink: #ebeae6; --muted: #a2a4ab; --rule: #2d3036;
-    --send: #2ea865; --send-ink: #07130c;
+    --send: #6cace4; --send-ink: #10233f; --ok: #8cc3ee;
     --lit-verde: #74b98c; --lit-blanco: #d9b95c; --lit-rojo: #e2747c; --lit-morado: #b89de0; --lit-rosa: #e69ab8;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #131417; --surface: #1b1d21; --ink: #ebeae6; --muted: #a2a4ab; --rule: #2d3036;
-  --send: #2ea865; --send-ink: #07130c;
+  --send: #6cace4; --send-ink: #10233f; --ok: #8cc3ee;
   --lit-verde: #74b98c; --lit-blanco: #d9b95c; --lit-rojo: #e2747c; --lit-morado: #b89de0; --lit-rosa: #e69ab8;
   color-scheme: dark;
 }
@@ -277,7 +278,7 @@ h1 .anio { color: var(--muted); font-weight: 400; }
 .enviar[aria-disabled="true"] { opacity: 0.45; pointer-events: none; }
 .copiar { min-height: 52px; border-radius: 12px; flex: 0 0 auto; }
 .ayuda { margin: 0; font-size: 0.82rem; color: var(--muted); text-align: center; min-height: 1.2em; }
-.ayuda.ok { color: var(--send); font-weight: 700; }
+.ayuda.ok { color: var(--ok); font-weight: 700; }
 
 /* Copia manual (si el navegador no deja copiar) */
 .manual { display: flex; flex-direction: column; gap: 8px; }
