@@ -33,6 +33,14 @@ def cristo_rey(anio):
     return adviento4 - datetime.timedelta(days=28)
 
 
+def ciclo(d):
+    """Ciclo dominical: el año litúrgico empieza el 1º domingo de Adviento.
+    Año litúrgico que termina en un año con resto 1 al dividir por 3 → A, 2 → B, 0 → C."""
+    adviento1 = cristo_rey(d.year) + datetime.timedelta(days=7)
+    anio_lit = d.year + 1 if d >= adviento1 else d.year
+    return {1: 'A', 2: 'B', 0: 'C'}[anio_lit % 3]
+
+
 def es_nombre(t):
     return t and not re.match(r'^(Por la|A partir|Este año|Hoy|Lecturas|Misa)', t)
 
@@ -110,6 +118,8 @@ for fecha in sorted(r):
         mc = re.search(r'(Verde|Blanco|Rojo|Morado|morado)', todo)
         color = mc.group(1).lower() if mc else ('morado' if nombre == 'Sábado Santo' else 'verde')
     dias[fecha] = {'c': nombre, 'k': color, 'm': memorias, 'l': lecturas}
+    if d.weekday() == 6:
+        dias[fecha]['y'] = ciclo(d)  # ciclo dominical A, B o C
 
 datos = {
     'desde': min(dias), 'hasta': max(dias),
