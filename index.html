@@ -304,7 +304,7 @@ h1 .anio { color: var(--muted); font-weight: 400; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .idioma button[aria-pressed="true"] { color: var(--bg); } }
 .idioma button:focus-visible { outline: 3px solid var(--acc); outline-offset: 2px; }
 .med-texto { display: flex; flex-direction: column; gap: 14px; }
-.med-texto p { margin: 0; font-family: var(--f-text); font-size: 1.08rem; line-height: 1.7; max-width: 65ch; overflow-wrap: break-word; }
+.med-texto p { white-space: pre-line; margin: 0; font-family: var(--f-text); font-size: 1.08rem; line-height: 1.7; max-width: 65ch; overflow-wrap: break-word; }
 .med-texto.corto p:nth-child(n+3) { display: none; }
 .med-mas { align-self: flex-start; }
 .med-nota { margin: 0; color: var(--muted); font-size: 0.82rem; }
@@ -711,9 +711,20 @@ img { max-width: 100%; }
     habilitarEnvio(true);
   }
 
+  // Domingo de Pascua (calendario gregoriano), para ubicar Cuaresma y Semana Santa
+  function pascua(y) {
+    var a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4;
+    var f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3);
+    var h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4;
+    var l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
+    var mes = Math.floor((h + l - 7 * m + 114) / 31), dia = ((h + l - 7 * m + 114) % 31) + 1;
+    return new Date(y, mes - 1, dia);
+  }
   function medDe(f) {
     if (!meds) return null;
-    var id = (meds.fechas || {})[f.slice(5)];
+    var d = aFecha(f);
+    var dif = Math.round((d - pascua(d.getFullYear())) / 86400000);
+    var id = (meds.pascua || {})[String(dif)] || (meds.fechas || {})[f.slice(5)];
     return id && meds.textos[id] ? meds.textos[id] : null;
   }
 
@@ -751,7 +762,7 @@ img { max-width: 100%; }
     $('medSig').hidden = !m.sigue;
     $('medSig').textContent = m.sigue ? (lang === 'en' ? 'To be continued tomorrow.' : 'Sigue mañana.') : '';
     $('medNota').textContent = lang === 'en'
-      ? 'Original text, public domain (' + obra.anio + '). Source: Standard Ebooks.'
+      ? 'Original text, public domain (' + obra.anio + '). Source: ' + obra.fuente + '.'
       : 'Traducción libre hecha por Claude (inteligencia artificial), no oficial. Original en inglés, de dominio público (' + obra.anio + ').';
     var cuerpo = m[lang].join('\n\n');
     medMensaje = '*' + (lang === 'en' ? m.titulo_en : m.titulo_es) + '*\n_' +

@@ -1,6 +1,6 @@
 // Guarda la app en el celular para que funcione sin conexión.
 // Cambiar VERSION cada vez que se actualizan las lecturas o la página.
-const VERSION = 'lecturas-v11';
+const VERSION = 'lecturas-v12';
 const ARCHIVOS = ['./', './index.html', './lecturas.json', './meditaciones.json', './manifest.json', './icono-mosaico-192.png', './icono-mosaico-512.png', './apple-touch-icon-mosaico.png'];
 
 self.addEventListener('install', (e) => {

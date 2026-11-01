@@ -25,3 +25,9 @@ Después de actualizar `lecturas.json`, cambiar `VERSION` en `sw.js` para que lo
 - Después de cambiar alguno, correr `python3 herramientas/armar_meditaciones.py` para regenerar `meditaciones.json`, y subir la versión de `sw.js`.
 - Fechas fijas: *A Christmas Carol* (Dickens) del 1 al 24 de diciembre; *The Everlasting Man*, cap. «The God in the Cave» (Chesterton), del 25/12 al 8/1. Se repiten todos los años.
 - Homilías de San Josemaría (*Es Cristo que pasa*): solo links a escriva.org, según la celebración del día (tabla `HOMILIAS` en `index.html`).
+
+## Meditaciones de Cuaresma y Semana Santa (Newman)
+
+- Fuente: *Meditations and Devotions* (1893), texto OCR de Internet Archive (`MeditationsAndDevotionsOf`), limpiado con los scripts de `herramientas/newman/` (`sacar.py` → `limpiar.py` → `pulir.py` → `spec.py`, que arma cada trozo y corrige errores de OCR).
+- Se ubican por días respecto de la Pascua (se calcula sola cada año): Ceniza a sábado, «Hope in God — Creator»; 14 días de Vía Crucis; 7 días de Vía Crucis breve (dos estaciones por día); 14 días de «Hope in God — Redeemer»; Domingo de Ramos a Viernes Santo, las meditaciones para el Viernes Santo (de a dos); Sábado Santo, «It is Consummated».
+- De las doce meditaciones para el Viernes Santo se dejaron afuera la 2 (sobre el pueblo judío) y la 3 (oración por Inglaterra).
