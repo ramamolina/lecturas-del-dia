@@ -495,6 +495,14 @@ img { max-width: 100%; }
       ciclo.textContent = 'Ciclo ' + dia.y;
       $('color').appendChild(ciclo);
     }
+    // Días de precepto en Argentina además de los domingos (calendario litúrgico CEA).
+    // Se busca por el nombre de la celebración, así vale también si alguna se traslada de día.
+    if (/Madre de Dios|Asunción de la Bienaventurada|Inmaculada Concepción|Natividad del Señor/.test(dia.c)) {
+      var precepto = document.createElement('span');
+      precepto.className = 'ciclo';
+      precepto.textContent = 'Día de precepto';
+      $('color').appendChild(precepto);
+    }
     $('nombre').textContent = dia.c;
     if (dia.m && dia.m.length) {
       $('memorias').textContent = 'Memoria libre: ' + dia.m.join(' · ');
