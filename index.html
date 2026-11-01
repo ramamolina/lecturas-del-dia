@@ -619,7 +619,9 @@ img { max-width: 100%; }
     $('fechaVisible').textContent = String(d.getDate()).padStart(2, '0') + '/' +
       MESES[d.getMonth()].slice(0, 3) + '/' + d.getFullYear();
     $('hoy').hidden = fecha === hoy();
-    $('meditacion').hidden = fecha !== hoy();
+    // La tarjeta de Hablar con Dios se muestra recién cuando ya cargaron las lecturas,
+    // así no aparece un instante arriba de todo mientras la página carga.
+    $('meditacion').hidden = !datos || fecha !== hoy();
 
     var lista = $('lecturas');
     lista.textContent = '';
