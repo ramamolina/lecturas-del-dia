@@ -18,3 +18,10 @@ Después de actualizar `lecturas.json`, cambiar `VERSION` en `sw.js` para que lo
   - Falta el número hebreo del salmo: "S.R. 97, 1.7-9" → "S.R. 97 (98)" (4/1); "S.R. 18, " → "S.R. 18 (19), " (16/1, 30/9).
   - Falta los dos puntos: "Lecturas Éxodo 32" → "Lecturas: Éxodo 32" (11/3).
 - Para armar los datos: `datos_app.py lecturas2026.json lecturas2027.json ../lecturas.json`.
+
+## Meditaciones (Adviento y Navidad)
+
+- Textos en `meditaciones/en/` (originales de dominio público, de Standard Ebooks) y `meditaciones/es/` (traducción libre de Claude).
+- Después de cambiar alguno, correr `python3 herramientas/armar_meditaciones.py` para regenerar `meditaciones.json`, y subir la versión de `sw.js`.
+- Fechas fijas: *A Christmas Carol* (Dickens) del 1 al 24 de diciembre; *The Everlasting Man*, cap. «The God in the Cave» (Chesterton), del 25/12 al 8/1. Se repiten todos los años.
+- Homilías de San Josemaría (*Es Cristo que pasa*): solo links a escriva.org, según la celebración del día (tabla `HOMILIAS` en `index.html`).

@@ -261,11 +261,55 @@ h1 .anio { color: var(--muted); font-weight: 400; }
 }
 .meditacion:hover { border-color: var(--muted); border-left-color: var(--acc); }
 .meditacion .med-txt { display: flex; flex-direction: column; gap: 2px; flex: 1 1 auto; min-width: 0; }
-.meditacion .med-rot { font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; color: var(--acc); }
+.med-rot { font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; color: var(--acc); }
 .meditacion .med-tit { font-family: var(--f-text); font-style: italic; font-size: 1.25rem; line-height: 1.25; }
 .meditacion .med-aut { font-size: 0.9rem; color: var(--muted); }
 .meditacion .med-paso { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
 .meditacion svg { flex: 0 0 auto; color: var(--acc); }
+
+/* Meditación con texto (Newman, Chesterton, Dickens): selector Español/English */
+.med {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid var(--rule);
+  padding-top: 24px;
+}
+.med-cab { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.med-cab .med-rot { margin: 0; }
+.med-titulo { margin: 4px 0 0; font-family: var(--f-text); font-weight: 600; font-size: 1.2rem; line-height: 1.3; text-wrap: balance; }
+.med-autor { margin: 2px 0 0; color: var(--muted); font-size: 0.92rem; }
+.idioma {
+  display: inline-flex;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 3px;
+  background: var(--surface);
+  flex: 0 0 auto;
+}
+.idioma button {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  min-height: 36px;
+  padding: 0 14px;
+  cursor: pointer;
+}
+.idioma button[aria-pressed="true"] { background: var(--acc); color: #fff; }
+:root[data-theme="dark"] .idioma button[aria-pressed="true"] { color: var(--bg); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .idioma button[aria-pressed="true"] { color: var(--bg); } }
+.idioma button:focus-visible { outline: 3px solid var(--acc); outline-offset: 2px; }
+.med-texto { display: flex; flex-direction: column; gap: 14px; }
+.med-texto p { margin: 0; font-family: var(--f-text); font-size: 1.08rem; line-height: 1.7; max-width: 65ch; overflow-wrap: break-word; }
+.med-texto.corto p:nth-child(n+3) { display: none; }
+.med-mas { align-self: flex-start; }
+.med-nota { margin: 0; color: var(--muted); font-size: 0.82rem; }
+.med-enviar { flex: 1 1 auto; }
+.med-sig { margin: 0; color: var(--muted); font-size: 0.85rem; font-style: italic; }
 
 .fuente {
   border-top: 1px solid var(--rule);
@@ -369,6 +413,38 @@ img { max-width: 100%; }
 
   <main class="lecturas" id="lecturas"></main>
 
+  <section class="med" id="med" hidden aria-labelledby="medTitulo">
+    <div class="med-cab">
+      <div>
+        <p class="med-rot" id="medRot">Meditación</p>
+        <h2 class="med-titulo" id="medTitulo"></h2>
+        <p class="med-autor" id="medAutor"></p>
+      </div>
+      <div class="idioma" role="group" aria-label="Idioma de la meditación">
+        <button type="button" id="idiomaEs" aria-pressed="true">Español</button>
+        <button type="button" id="idiomaEn" aria-pressed="false">English</button>
+      </div>
+    </div>
+    <div class="med-texto corto" id="medTexto"></div>
+    <button class="btn med-mas" type="button" id="medMas">Seguir leyendo</button>
+    <p class="med-sig" id="medSig" hidden></p>
+    <p class="med-nota" id="medNota"></p>
+    <div class="acciones">
+      <a class="btn med-enviar" id="medEnviar" target="_blank" rel="noopener">Enviar meditación por WhatsApp</a>
+      <button class="btn" type="button" id="medCopiar">Copiar</button>
+    </div>
+  </section>
+
+  <a class="meditacion" id="homilia" target="_blank" rel="noopener" hidden>
+    <span class="med-txt">
+      <span class="med-rot">Homilía del día</span>
+      <span class="med-tit" id="homTitulo"></span>
+      <span class="med-aut">San Josemaría · <em>Es Cristo que pasa</em></span>
+      <span class="med-paso" id="homOcasion"></span>
+    </span>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+  </a>
+
   <a class="meditacion" id="meditacion" href="https://hablarcondios.org/" target="_blank" rel="noopener" hidden>
     <span class="med-txt">
       <span class="med-rot">Para rezar hoy</span>
@@ -439,6 +515,45 @@ img { max-width: 100%; }
 
   var fecha = hoy();
 
+  // Homilías de San Josemaría (Es Cristo que pasa) según la celebración del día.
+  // Solo link a escriva.org: el texto tiene derechos (Scriptor S.A. y Fundación Studium).
+  var ECQP = 'https://escriva.org/es/es-cristo-que-pasa/';
+  var HOMILIAS = [
+    [/^1º domingo de Adviento/, 'vocacion-cristiana/', 'Vocación cristiana', 'Domingo I de Adviento, 1951'],
+    [/^Natividad del Señor/, 'el-triunfo-de-cristo-en-la-humildad/', 'El triunfo de Cristo en la humildad', 'Navidad, 1963'],
+    [/^La Sagrada Familia/, 'el-matrimonio-vocacion-cristiana/', 'El matrimonio, vocación cristiana', 'Sagrada Familia, 1970'],
+    [/^Epifanía del Señor/, 'en-la-epifania-del-senor/', 'En la Epifanía del Señor', 'Epifanía, 1956'],
+    [/^San José, Esposo/, 'en-el-taller-de-jose/', 'En el taller de José', 'San José, 1963'],
+    [/^1º domingo de Cuaresma/, 'la-conversion-de-los-hijos-de-dios/', 'La conversión de los hijos de Dios', 'Domingo I de Cuaresma, 1952'],
+    [/^Miércoles de la 4ª semana de Cuaresma/, 'el-respeto-cristiano-a-la-persona-y-a-su-libertad/', 'El respeto cristiano a la persona y a su libertad', 'Miércoles de la IV semana de Cuaresma, 1961'],
+    [/^Domingo de Ramos/, 'la-lucha-interior/', 'La lucha interior', 'Domingo de Ramos, 1971'],
+    [/^Jueves Santo/, 'la-eucaristia-misterio-de-fe-y-de-amor/', 'La Eucaristía, misterio de fe y de amor', 'Jueves Santo, 1960'],
+    [/^Viernes Santo/, 'la-muerte-de-cristo-vida-del-ristiano/', 'La muerte de Cristo, vida del cristiano', 'Viernes Santo, 1960'],
+    [/^Domingo de Pascua/, 'cristo-presente-en-los-cristianos/', 'Cristo presente en los cristianos', 'Domingo de Resurrección, 1967'],
+    [/^Ascensión del Señor/, 'la-ascension-del-senor-a-los-cielos/', 'La Ascensión del Señor a los cielos', 'Ascensión, 1966'],
+    [/^Pentecostés/, 'el-gran-desconocido/', 'El Gran Desconocido', 'Pentecostés, 1969'],
+    [/^Santísimo Cuerpo y Sangre/, 'en-la-fiesta-del-corpus-christi/', 'En la fiesta del Corpus Christi', 'Corpus Christi, 1964'],
+    [/^Sagrado Corazón de Jesús/, 'el-corazon-de-cristo-paz-de-los-cristianos/', 'El corazón de Cristo, paz de los cristianos', 'Sagrado Corazón, 1966'],
+    [/^Asunción de la Bienaventurada/, 'la-virgen-santa-causa-de-nuestra-alegria/', 'La Virgen santa, causa de nuestra alegría', 'Asunción, 1961'],
+    [/Rey del Universo/, 'cristo-rey/', 'Cristo Rey', 'Cristo Rey, 1970']
+  ];
+  function homiliaDe(f, dia) {
+    if (dia) {
+      for (var i = 0; i < HOMILIAS.length; i++) {
+        if (HOMILIAS[i][0].test(dia.c)) return HOMILIAS[i];
+      }
+    }
+    // Comienzo del mes de María (la homilía empieza "en este mes de mayo que comienza")
+    if (f.slice(5) === '05-01') return [null, 'por-maria-hacia-jesus/', 'Por María, hacia Jesús', 'Mes de mayo, 1957'];
+    return null;
+  }
+
+  // Meditaciones con texto (obras en dominio público) y preferencia de idioma
+  var meds = null;
+  var idioma = 'es';
+  try { if (localStorage.getItem('idiomaMed') === 'en') idioma = 'en'; } catch (err) {}
+  var medMensaje = '';
+
   function armarMensaje(f, dia) {
     var partes = ['*Lecturas del ' + larga(f) + '*', '_' + dia.c + (dia.y ? ' · Ciclo ' + dia.y : '') + '_', ''];
     dia.l.forEach(function (l) {
@@ -447,6 +562,12 @@ img { max-width: 100%; }
       partes.push('');
     });
     partes.push('_Texto bíblico: El Libro del Pueblo de Dios_');
+    var hom = homiliaDe(f, dia);
+    if (hom) {
+      partes.push('');
+      partes.push('📖 *Homilía de San Josemaría:* _' + hom[2] + '_');
+      partes.push(ECQP + hom[1]);
+    }
     // El sitio publica solo la meditación del día: se agrega el link cuando se manda la de hoy.
     if (f === hoy()) {
       partes.push('');
@@ -503,6 +624,15 @@ img { max-width: 100%; }
     var lista = $('lecturas');
     lista.textContent = '';
     if (!datos) return;
+
+    var hom = homiliaDe(fecha, datos.dias[fecha]);
+    $('homilia').hidden = !hom;
+    if (hom) {
+      $('homilia').href = ECQP + hom[1];
+      $('homTitulo').textContent = hom[2];
+      $('homOcasion').textContent = 'Predicada en: ' + hom[3] + ' · escriva.org';
+    }
+    renderMed();
 
     $('ant').disabled = fecha <= datos.desde;
     $('sig').disabled = fecha >= datos.hasta;
@@ -581,6 +711,83 @@ img { max-width: 100%; }
     habilitarEnvio(true);
   }
 
+  function medDe(f) {
+    if (!meds) return null;
+    var id = (meds.fechas || {})[f.slice(5)];
+    return id && meds.textos[id] ? meds.textos[id] : null;
+  }
+
+  function renderMed() {
+    var m = medDe(fecha);
+    $('med').hidden = !m;
+    if (!m) { medMensaje = ''; return; }
+    var obra = meds.obras[m.obra];
+    var lang = idioma === 'en' ? 'en' : 'es';
+    $('idiomaEs').setAttribute('aria-pressed', String(lang === 'es'));
+    $('idiomaEn').setAttribute('aria-pressed', String(lang === 'en'));
+    $('medRot').textContent = m.tiempo || 'Meditación';
+    $('medTitulo').textContent = lang === 'en' ? m.titulo_en : m.titulo_es;
+    $('medAutor').textContent = obra.autor + ' · ' + (lang === 'en' ? obra.titulo_en : obra.titulo_es);
+    var caja = $('medTexto');
+    caja.textContent = '';
+    caja.lang = lang;
+    m[lang].forEach(function (t) {
+      var p = document.createElement('p');
+      // _texto_ = cursiva del original
+      t.split(/(_[^_]+_)/).forEach(function (pedazo) {
+        if (/^_[^_]+_$/.test(pedazo)) {
+          var em = document.createElement('em');
+          em.textContent = pedazo.slice(1, -1);
+          p.appendChild(em);
+        } else if (pedazo) {
+          p.appendChild(document.createTextNode(pedazo));
+        }
+      });
+      caja.appendChild(p);
+    });
+    var largo = m[lang].length > 2;
+    caja.classList.toggle('corto', largo);
+    $('medMas').hidden = !largo;
+    $('medSig').hidden = !m.sigue;
+    $('medSig').textContent = m.sigue ? (lang === 'en' ? 'To be continued tomorrow.' : 'Sigue mañana.') : '';
+    $('medNota').textContent = lang === 'en'
+      ? 'Original text, public domain (' + obra.anio + '). Source: Standard Ebooks.'
+      : 'Traducción libre hecha por Claude (inteligencia artificial), no oficial. Original en inglés, de dominio público (' + obra.anio + ').';
+    var cuerpo = m[lang].join('\n\n');
+    medMensaje = '*' + (lang === 'en' ? m.titulo_en : m.titulo_es) + '*\n_' +
+      obra.autor + ', ' + (lang === 'en' ? obra.titulo_en : obra.titulo_es) + '_\n\n' + cuerpo + '\n\n' +
+      (lang === 'en' ? '_Public domain text._' : '_Traducción libre de Claude (IA). Original de dominio público._');
+    $('medEnviar').href = 'https://wa.me/?text=' + encodeURIComponent(medMensaje);
+  }
+
+  function cambiarIdioma(l) {
+    idioma = l;
+    try { localStorage.setItem('idiomaMed', l); } catch (err) {}
+    renderMed();
+  }
+  $('idiomaEs').addEventListener('click', function () { cambiarIdioma('es'); });
+  $('idiomaEn').addEventListener('click', function () { cambiarIdioma('en'); });
+  $('medMas').addEventListener('click', function () {
+    $('medTexto').classList.remove('corto');
+    $('medMas').hidden = true;
+  });
+  $('medCopiar').addEventListener('click', function () {
+    if (!medMensaje) return;
+    var ayuda = $('ayuda');
+    try {
+      navigator.clipboard.writeText(medMensaje).then(function () {
+        ayuda.textContent = 'Meditación copiada. Abrí WhatsApp y pegala en el chat que quieras.';
+        ayuda.classList.add('ok');
+      }, function () {
+        $('textoManual').value = medMensaje;
+        $('manual').hidden = false;
+      });
+    } catch (err) {
+      $('textoManual').value = medMensaje;
+      $('manual').hidden = false;
+    }
+  });
+
   function ir(f) {
     if (!f) return;
     fecha = f;
@@ -623,6 +830,9 @@ img { max-width: 100%; }
       datos = j;
       $('rango').textContent = 'Cargado del ' + corta(j.desde) + ' al ' + corta(j.hasta) + '.';
       render();
+      return fetch('meditaciones.json')
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (m) { meds = m; renderMed(); }, function () {});
     })
     .catch(function () {
       $('nombre').textContent = 'No se pudieron cargar las lecturas';
