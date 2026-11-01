@@ -246,6 +246,27 @@ h1 .anio { color: var(--muted); font-weight: 400; }
 .aviso h2 { margin: 0; font-family: var(--f-text); font-size: 1.2rem; font-weight: 600; text-wrap: balance; }
 .aviso p { margin: 0; color: var(--muted); }
 
+/* Meditación del día: tarjeta con link a Hablar con Dios (solo link, sin copiar texto) */
+.meditacion {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--acc);
+  border-radius: 12px;
+  padding: 16px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.meditacion:hover { border-color: var(--muted); border-left-color: var(--acc); }
+.meditacion .med-txt { display: flex; flex-direction: column; gap: 2px; flex: 1 1 auto; min-width: 0; }
+.meditacion .med-rot { font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; color: var(--acc); }
+.meditacion .med-tit { font-family: var(--f-text); font-style: italic; font-size: 1.25rem; line-height: 1.25; }
+.meditacion .med-aut { font-size: 0.9rem; color: var(--muted); }
+.meditacion .med-paso { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+.meditacion svg { flex: 0 0 auto; color: var(--acc); }
+
 .fuente {
   border-top: 1px solid var(--rule);
   padding-top: 16px;
@@ -348,6 +369,16 @@ img { max-width: 100%; }
 
   <main class="lecturas" id="lecturas"></main>
 
+  <a class="meditacion" id="meditacion" href="https://hablarcondios.org/" target="_blank" rel="noopener" hidden>
+    <span class="med-txt">
+      <span class="med-rot">Para rezar hoy</span>
+      <span class="med-tit">Hablar con Dios</span>
+      <span class="med-aut">Meditación del día · Francisco Fernández-Carvajal</span>
+      <span class="med-paso">En el sitio, tocá «Meditación diaria».</span>
+    </span>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+  </a>
+
   <footer class="fuente">
     <p>Texto bíblico: <em>El Libro del Pueblo de Dios</em>, traducción argentina aprobada para la liturgia (publicado en vatican.va).</p>
     <p>Qué lecturas van cada día: Calendario litúrgico de la Conferencia Episcopal Argentina. <span id="rango"></span></p>
@@ -416,6 +447,12 @@ img { max-width: 100%; }
       partes.push('');
     });
     partes.push('_Texto bíblico: El Libro del Pueblo de Dios_');
+    // El sitio publica solo la meditación del día: se agrega el link cuando se manda la de hoy.
+    if (f === hoy()) {
+      partes.push('');
+      partes.push('🙏 *Para rezar hoy:* _Hablar con Dios_, de Francisco Fernández-Carvajal');
+      partes.push('https://hablarcondios.org/ (tocá «Meditación diaria»)');
+    }
     return partes.join('\n');
   }
 
@@ -461,6 +498,7 @@ img { max-width: 100%; }
     $('fechaVisible').textContent = String(d.getDate()).padStart(2, '0') + '/' +
       MESES[d.getMonth()].slice(0, 3) + '/' + d.getFullYear();
     $('hoy').hidden = fecha === hoy();
+    $('meditacion').hidden = fecha !== hoy();
 
     var lista = $('lecturas');
     lista.textContent = '';
