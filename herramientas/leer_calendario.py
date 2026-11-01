@@ -44,7 +44,7 @@ for crudo in lineas:
         ignorar = True  # misa opcional extra (ej. Santa María junto a la cruz): no va
     if ignorar:
         continue
-    if en_lecturas and re.match(r'^(DOMINGO DE PASCUA|MISA |NATIVIDAD|Por la )', linea):
+    if en_lecturas and re.match(r'^(DOMINGO DE PASCUA|MISA |NATIVIDAD|Por la |Desde la mañana)', linea):
         actual['bloques'].append({'encabezado': [linea], 'lecturas': []})
         en_lecturas = False
         continue
@@ -57,7 +57,8 @@ for crudo in lineas:
             actual['bloques'][-1]['lecturas'].append(linea.lstrip('. ').strip())
             continue
     # encabezados: nombres de misas dentro del día (Por la mañana:, MISA CRISMAL, Noche:, etc.)
-    if re.match(r'^(Por la|A partir|MISA|DOMINGO DE PASCUA|ACCIÓN|NATIVIDAD|Misa del día)', linea) and actual['bloques'][-1]['lecturas']:
+    # desde 2027 la misa de la tarde (vigilia) viene como "Misa vespertina:" seguida de sus lecturas
+    if re.match(r'^(Por la|A partir|MISA|DOMINGO DE PASCUA|ACCIÓN|NATIVIDAD|Misa del día|Misa vespertina|Desde la mañana)', linea) and actual['bloques'][-1]['lecturas']:
         actual['bloques'].append({'encabezado': [linea], 'lecturas': []})
     elif not actual['bloques'][-1]['lecturas'] and not linea.startswith(('Misa', 'Celebración', 'L. de')):
         if len(actual['bloques']) == 1:

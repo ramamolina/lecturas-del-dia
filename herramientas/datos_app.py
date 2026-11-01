@@ -9,7 +9,9 @@ import sys
 entradas, salida = sys.argv[1:-1], sys.argv[-1]
 DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 CHICAS = {'de', 'del', 'la', 'las', 'los', 'el', 'y', 'e', 'en', 'a', 'al', 'o'}
-COLOR = re.compile(r'\s*\((?:[Vv]erde|[Bb]lanco|[Rr]ojo|[Mm]orado|[Rr]osad?o|Morado o Rosado|morado)\)|\s+Rojo$')
+COLOR = re.compile(r'\s*\((?:[Vv]erde|[Bb]lanco|[Rr]ojo|[Mm]orado|[Rr]osad?o|Morado o Rosado|morado)\)|\s+Rojo$'
+                   # desde 2027 el color viene después de un guion: 'Feria - Verde', '3º DE ADVIENTO - Morado o Rosado'
+                   r'|\s*-?\s*\b(?:Verde|Blanco|Rojo|Morado|Rosado)(?:\s+o\s+(?:Rosado|Negro))?\s*$')
 TIEMPOS = {'DURANTE EL AÑO': 'durante el año', 'DE CUARESMA': 'de Cuaresma', 'DE PASCUA': 'de Pascua',
            'DE ADVIENTO': 'de Adviento'}
 
@@ -60,6 +62,8 @@ for fecha in sorted(r):
     resto = [s for s in t[1:] if es_nombre(s)]
     memorias = []
     m_dom = re.match(r'^(\d+)º (DURANTE EL AÑO|DE CUARESMA|DE PASCUA|DE ADVIENTO)$', t0)
+    if (d.month, d.day) == (12, 25):
+        semana = None  # desde Navidad no se cuentan semanas (al pasar de un año al otro)
     if d.weekday() == 6:
         if m_dom:
             semana = (int(m_dom.group(1)), TIEMPOS[m_dom.group(2)])
@@ -77,9 +81,11 @@ for fecha in sorted(r):
         nombre = f'{m_dom.group(1)}º domingo {TIEMPOS[m_dom.group(2)]}'
     elif t0 == 'SANTO':
         nombre = f'{dia} Santo'
+    elif t0.startswith('DE RAMOS'):
+        nombre = 'Domingo ' + titulo_mayus(t0)[0].lower() + titulo_mayus(t0)[1:]  # PDF 2027: sin "DOMINGO"
     elif t0 == 'DE CENIZA':
         nombre = 'Miércoles de Ceniza'
-    elif t0 == 'DE LA OCTAVA DE PASCUA':
+    elif t0.upper() == 'DE LA OCTAVA DE PASCUA':
         nombre = f'{dia} de la Octava de Pascua'
     elif t0.startswith('Feria'):
         if t0.startswith('Feria después de Ceniza'):
@@ -93,7 +99,7 @@ for fecha in sorted(r):
         else:
             nombre = f'{dia} (feria)'
         memorias = [titulo_mayus(s.strip('[] ')) for s in resto]
-    elif t0 in ('Memoria obligatoria', 'Fiesta', 'Solemnidad', 'Solemnidad con Octava', 'Morado o Negro',
+    elif t0 in ('Memoria obligatoria', 'Fiesta', 'Solemnidad', 'Solemnidad (trasladada)', 'Solemnidad con Octava', 'Morado o Negro',
                 'Octava de la Natividad del Señor', 'Octava de Pascua') and resto:
         nombre = titulo_mayus(resto[0])
     elif t0.isupper():

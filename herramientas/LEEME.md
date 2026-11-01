@@ -9,3 +9,12 @@ Se usan una vez por año, cuando sale el Calendario litúrgico nuevo de la CEA.
 5. `mensaje.py`: muestra cómo queda el mensaje de una fecha.
 
 Después de actualizar `lecturas.json`, cambiar `VERSION` en `sw.js` para que los celulares bajen la versión nueva.
+
+## Calendario 2027 (cargado el 01/11/2026)
+- PDF: https://curas.com.ar/Calendario/Calendario_lit%C3%BArgico_2027_para_la_Argentina.pdf (67 páginas).
+- El formato cambió un poco respecto de 2026 (color después de un guion: "Feria - Verde"; misa de la vigilia como "Misa vespertina:" con sus lecturas; Pascua con "Desde la mañana:"). Los scripts ya contemplan los dos formatos.
+- Erratas del PDF corregidas a mano en el texto antes de leerlo (`pdftotext -layout` y después estos cambios):
+  - Cánticos marcados como salmo: "S.R. Isaías 12" y "S.R. Tobías 13" → "C.R." (10/1, 4/6, 5/6, 12/12).
+  - Falta el número hebreo del salmo: "S.R. 97, 1.7-9" → "S.R. 97 (98)" (4/1); "S.R. 18, " → "S.R. 18 (19), " (16/1, 30/9).
+  - Falta los dos puntos: "Lecturas Éxodo 32" → "Lecturas: Éxodo 32" (11/3).
+- Para armar los datos: `datos_app.py lecturas2026.json lecturas2027.json ../lecturas.json`.

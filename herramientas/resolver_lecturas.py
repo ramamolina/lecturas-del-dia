@@ -255,7 +255,7 @@ for d in dias:
         resultado[d['fecha']] = {'titulo': d['titulo'], 'lecturas': [], 'revisar': ['día sin misa (ej. Sábado Santo)']}
         continue
     if len(bloques) > 1:
-        preferido = [b for b in bloques if any(k in ' '.join(b['encabezado']) for k in ('MISA DEL DÍA', 'CENA DEL SEÑOR'))]
+        preferido = [b for b in bloques if any(k in ' '.join(b['encabezado']) for k in ('MISA DEL DÍA', 'CENA DEL SEÑOR', 'Desde la mañana'))]
         bloque = preferido[0] if preferido else bloques[0]
         revisar.append('el día tiene más de una misa; se eligió: ' + (' / '.join(bloque['encabezado']) or 'la primera'))
     else:
