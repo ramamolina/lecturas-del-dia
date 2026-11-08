@@ -14,7 +14,8 @@
 <title>Lecturas del Día</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400;1,7..72,500&display=swap">
+<!-- Las tipografías se cargan sin frenar la página: si la red está lenta, se ve con la letra del celular. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400;1,7..72,500&display=swap" media="print" onload="this.media='all'">
 <style>
 /* Layout: una columna de lectura (65ch) con la fecha arriba, el color litúrgico del día como acento, y la barra de envío fija abajo. */
 :root {
