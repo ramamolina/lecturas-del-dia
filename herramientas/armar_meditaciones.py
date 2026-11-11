@@ -76,6 +76,41 @@ VIERNES = {
 }
 SEMANA_SANTA = [(-7, [1, 4]), (-6, [5, 6]), (-5, [7, 8]), (-4, [9, 10]), (-3, [12]), (-2, [11])]
 
+# Mayo: (título latino de la Letanía, título en español, título en inglés)
+MAYO = [
+    ('', 'El mes de María (1/2)', 'The Month of Mary (1/2)'),
+    ('', 'El mes de María (2/2)', 'The Month of Mary (2/2)'),
+    ('Virgo Purissima', 'Virgen purísima', 'Most Pure Virgin'),
+    ('Virgo Prædicanda', 'Virgen digna de alabanza', 'Virgin to be Proclaimed'),
+    ('Mater Admirabilis', 'Madre admirable', 'Mother Most Admirable'),
+    ('Domus Aurea', 'Casa de oro', 'House of Gold'),
+    ('Mater Amabilis', 'Madre amable', 'Mother Most Amiable'),
+    ('Virgo Veneranda', 'Virgen venerable', 'Virgin Most Venerable'),
+    ('Sancta Maria', 'Santa María', 'Holy Mary'),
+    ('Regina Angelorum', 'Reina de los Ángeles', 'Queen of Angels'),
+    ('Speculum Justitiæ', 'Espejo de justicia', 'Mirror of Justice'),
+    ('Sedes Sapientiæ', 'Trono de la sabiduría', 'Seat of Wisdom'),
+    ('Janua Cœli', 'Puerta del cielo', 'Gate of Heaven'),
+    ('Mater Creatoris', 'Madre del Creador', 'Mother of the Creator'),
+    ('Mater Christi', 'Madre de Cristo', 'Mother of Christ'),
+    ('Mater Salvatoris', 'Madre del Salvador', 'Mother of the Saviour'),
+    ('Regina Martyrum', 'Reina de los mártires', 'Queen of Martyrs'),
+    ('Vas Insigne Devotionis', 'Vaso insigne de devoción', 'Singular Vessel of Devotion'),
+    ('Vas Honorabile', 'Vaso digno de honor', 'Vessel of Honour'),
+    ('Vas Spirituale', 'Vaso espiritual', 'Spiritual Vessel'),
+    ('Consolatrix Afflictorum', 'Consuelo de los afligidos', 'Comforter of the Afflicted'),
+    ('Virgo Prudentissima', 'Virgen prudentísima', 'Most Prudent Virgin'),
+    ('Turris Eburnea', 'Torre de marfil', 'Tower of Ivory'),
+    ('Sancta Dei Genitrix', 'Santa Madre de Dios', 'Holy Mother of God'),
+    ('Mater Intemerata', 'Madre inmaculada', 'Mother Undefiled'),
+    ('Rosa Mystica', 'Rosa mística', 'Mystical Rose'),
+    ('Turris Davidica', 'Torre de David', 'Tower of David'),
+    ('Virgo Potens', 'Virgen poderosa', 'Virgin Most Powerful'),
+    ('Auxilium Christianorum', 'Auxilio de los cristianos', 'Help of Christians'),
+    ('Virgo Fidelis', 'Virgen fiel', 'Virgin Most Faithful'),
+    ('Stella Matutina', 'Estrella de la mañana', 'Morning Star'),
+]
+
 # Estrofas de A Christmas Carol: (cuántos trozos tiene, título en español, título en inglés)
 ESTROFAS = [
     (5, 'Primera estrofa: El fantasma de Marley', "Stave One: Marley's Ghost"),
@@ -176,6 +211,13 @@ def main():
         pascua[str(d)] = ident
     nw('nw-sab-01', 'Sábado Santo', 'Está cumplido', 'It is Consummated', False)
     pascua['-1'] = 'nw-sab-01'
+
+    # Mes de María (Newman, primera parte): un título de la Letanía por día, del 1 al 31 de mayo
+    for k, (lat, es_t, en_t) in enumerate(MAYO, 1):
+        ident = 'nw-may-%02d' % k
+        tit = lat + ' · ' if lat else ''
+        nw(ident, 'Mes de María', tit + es_t, tit + en_t, k < 31)
+        fechas['05-%02d' % k] = ident
 
     salida = {'obras': OBRAS, 'textos': textos, 'fechas': fechas, 'pascua': pascua}
     with open(os.path.join(BASE, 'meditaciones.json'), 'w', encoding='utf-8') as f:
