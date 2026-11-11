@@ -27,6 +27,13 @@ OBRAS = {
         'anio': 1925,
         'fuente': 'Standard Ebooks',
     },
+    'orto': {
+        'autor': 'G. K. Chesterton',
+        'titulo_es': 'Ortodoxia',
+        'titulo_en': 'Orthodoxy',
+        'anio': 1908,
+        'fuente': 'Standard Ebooks',
+    },
     'newman': {
         'autor': 'John Henry Newman',
         'titulo_es': 'Meditaciones y devociones',
@@ -167,6 +174,20 @@ FIESTAS = {63: 34, 64: 35, 65: 36, 68: 37}
 # (el segundo tramo, de Pentecostés al 30 de noviembre, queda para Chesterton y otros)
 SERIE_ORDINARIO = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 38, 39, 40, 41, 42, 43, 44, 45]
 
+# Ortodoxia (Chesterton): capítulos (cantidad de partes, título es, título en). orto-NN seguidos.
+ORTODOXIA = [
+    (2, 'Introducción en defensa de todo lo demás', 'Introduction in Defence of Everything Else'),
+    (6, 'El loco', 'The Maniac'),
+    (6, 'El suicidio del pensamiento', 'The Suicide of Thought'),
+    (7, 'La ética de los cuentos de hadas', 'The Ethics of Elfland'),
+    (6, 'La bandera del mundo', 'The Flag of the World'),
+    (8, 'Las paradojas del cristianismo', 'The Paradoxes of Christianity'),
+    (8, 'La revolución eterna', 'The Eternal Revolution'),
+    (6, 'El romance de la ortodoxia', 'The Romance of Orthodoxy'),
+    (7, 'La autoridad y el aventurero', 'Authority and the Adventurer'),
+]
+ROMANOS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX']
+
 # Estrofas de A Christmas Carol: (cuántos trozos tiene, título en español, título en inglés)
 ESTROFAS = [
     (5, 'Primera estrofa: El fantasma de Marley', "Stave One: Marley's Ghost"),
@@ -183,6 +204,11 @@ def leer(idioma, ident):
     # Versalitas del libro impreso al comienzo de párrafo («LEAVING the House…» → «Leaving the House…»)
     import re
     return [re.sub(r'^([‘“]?(?:\d+\. )?)([A-Z])([A-Z]+)\b(?= [a-z(‘])', lambda m: m.group(1) + m.group(2) + m.group(3).lower(), p) for p in ps]
+
+
+def sin_titulo(ps, titulo):
+    """Saca el párrafo con el título del capítulo (ya va en el título de la meditación)."""
+    return [p for p in ps if p.strip('_') != titulo]
 
 
 def fecha_mas(mmdd, n):
@@ -285,6 +311,23 @@ def main():
         {'nombre': 'ordinario-enero', 'tramos': [['01-09', -47]],
          'textos': [doc(k, 'Tiempo ordinario') for k in SERIE_ORDINARIO]},
     ]
+    # Tiempo ordinario, segundo tramo: lunes después de Pentecostés → 30 de noviembre
+    ordinario, n = [], 0
+    for c, (cant, tes, ten) in enumerate(ORTODOXIA):
+        for j in range(1, cant + 1):
+            n += 1
+            ident = 'orto-%02d' % n
+            if not os.path.exists(os.path.join(CARPETA, 'es', ident + '.txt')):
+                continue  # todavía sin traducir
+            parte = ' (%d/%d)' % (j, cant)
+            textos[ident] = {
+                'obra': 'orto', 'tiempo': 'Tiempo ordinario',
+                'titulo_es': '%s. %s%s' % (ROMANOS[c], tes, parte), 'titulo_en': '%s. %s%s' % (ROMANOS[c], ten, parte),
+                'es': sin_titulo(leer('es', ident), tes), 'en': sin_titulo(leer('en', ident), ten), 'sigue': n < 56,
+            }
+            ordinario.append(ident)
+    series.append({'nombre': 'ordinario', 'tramos': [[50, '11-30']], 'textos': ordinario})
+
     for d, k in FIESTAS.items():
         pascua[str(d)] = doc(k, 'Sagrado Corazón' if k == 37 else 'Corpus Christi')
 
