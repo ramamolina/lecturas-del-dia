@@ -41,4 +41,6 @@ Después de actualizar `lecturas.json`, cambiar `VERSION` en `sw.js` para que lo
   - `pascua`: domingo de Pascua → Pentecostés (Resurrección, Dios con nosotros, los cuarenta días, Ascensión, Paráclito…).
   - `ordinario-enero`: 9 de enero → martes antes de Ceniza (Dios y el alma, el pecado, la Cruz, atributos de Dios, Conclusión).
 - Fijas por la Pascua: Corpus Christi (+63, domingo en Argentina, y los dos días siguientes) y Sagrado Corazón (+68).
-- Pendiente: segundo tramo del tiempo ordinario (lunes después de Pentecostés → 30 de noviembre).
+- `ordinario`: lunes después de Pentecostés → 30 de noviembre. Empieza con *Ortodoxia* de Chesterton (1908, Standard Ebooks), 56 partes `orto-NN` (unos 56 días libres: junio-julio). El título del capítulo se saca del texto porque ya va en el título de la meditación.
+- Para agregar otra obra al final de una serie: textos en `meditaciones/en` y `meditaciones/es`, y sumarla a la lista de la serie en `armar_meditaciones.py`.
+- Pendiente: fines de enero → Ceniza, y agosto → noviembre (candidatos: resto de *El hombre eterno*, *San Francisco de Asís* de Chesterton).
