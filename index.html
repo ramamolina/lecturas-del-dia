@@ -731,11 +731,37 @@ img { max-width: 100%; }
     var mes = Math.floor((h + l - 7 * m + 114) / 31), dia = ((h + l - 7 * m + 114) % 31) + 1;
     return new Date(y, mes - 1, dia);
   }
+  // Meditación fija del día: por distancia a la Pascua (Cuaresma) o por fecha (mayo, diciembre-enero)
+  function medFija(d) {
+    var dif = Math.round((d - pascua(d.getFullYear())) / 86400000);
+    var mmdd = ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+    return (meds.pascua || {})[String(dif)] || (meds.fechas || {})[mmdd];
+  }
+  // Extremo de un tramo: número = días respecto de la Pascua; texto 'MM-DD' = fecha fija
+  function extremo(y, x) {
+    if (typeof x === 'number') { var p = pascua(y); return new Date(y, p.getMonth(), p.getDate() + x); }
+    return new Date(y, +x.slice(0, 2) - 1, +x.slice(3));
+  }
+  // Series (Pascua, tiempo ordinario): textos en orden, uno por cada día libre de los tramos
+  function medSerie(d) {
+    var y = d.getFullYear();
+    for (var s = 0; s < (meds.series || []).length; s++) {
+      var serie = meds.series[s], n = 0;
+      for (var t = 0; t < serie.tramos.length; t++) {
+        var a = extremo(y, serie.tramos[t][0]), b = extremo(y, serie.tramos[t][1]);
+        for (var x = a; x <= b; x = new Date(y, x.getMonth(), x.getDate() + 1)) {
+          var libre = !medFija(x);
+          if (x.getTime() === d.getTime()) return libre ? serie.textos[n] : null;
+          if (libre) n++;
+        }
+      }
+    }
+    return null;
+  }
   function medDe(f) {
     if (!meds) return null;
     var d = aFecha(f);
-    var dif = Math.round((d - pascua(d.getFullYear())) / 86400000);
-    var id = (meds.pascua || {})[String(dif)] || (meds.fechas || {})[f.slice(5)];
+    var id = medFija(d) || medSerie(d);
     return id && meds.textos[id] ? meds.textos[id] : null;
   }
 

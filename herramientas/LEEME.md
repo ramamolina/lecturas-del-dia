@@ -31,3 +31,14 @@ Después de actualizar `lecturas.json`, cambiar `VERSION` en `sw.js` para que lo
 - Fuente: *Meditations and Devotions* (1893), texto OCR de Internet Archive (`MeditationsAndDevotionsOf`), limpiado con los scripts de `herramientas/newman/` (`sacar.py` → `limpiar.py` → `pulir.py` → `spec.py`, que arma cada trozo y corrige errores de OCR).
 - Se ubican por días respecto de la Pascua (se calcula sola cada año): Ceniza a sábado, «Hope in God — Creator»; 14 días de Vía Crucis; 7 días de Vía Crucis breve (dos estaciones por día); 14 días de «Hope in God — Redeemer»; Domingo de Ramos a Viernes Santo, las meditaciones para el Viernes Santo (de a dos); Sábado Santo, «It is Consummated».
 - De las doce meditaciones para el Viernes Santo se dejaron afuera la 2 (sobre el pueblo judío) y la 3 (oración por Inglaterra).
+
+## Meditaciones: mayo, tiempo pascual y tiempo ordinario (Newman)
+
+- Mayo (fechas `05-01`…`05-31`): *Meditations and Devotions*, Parte I, un título de la Letanía lauretana por día (`nw-may-NN`).
+- Parte III, «Meditations on Christian Doctrine» (`nw-dNN`, en el orden del libro). Se reparten con **series** (`series` en `meditaciones.json`):
+  - Cada serie tiene `tramos` (extremos = número de días respecto de la Pascua, o `'MM-DD'`) y una lista de `textos`.
+  - La app asigna los textos en orden, uno por cada día del tramo que no tenga ya una meditación fija (por `pascua` o por `fechas`). Si la lista se termina, ese día queda sin meditación.
+  - `pascua`: domingo de Pascua → Pentecostés (Resurrección, Dios con nosotros, los cuarenta días, Ascensión, Paráclito…).
+  - `ordinario-enero`: 9 de enero → martes antes de Ceniza (Dios y el alma, el pecado, la Cruz, atributos de Dios, Conclusión).
+- Fijas por la Pascua: Corpus Christi (+63, domingo en Argentina, y los dos días siguientes) y Sagrado Corazón (+68).
+- Pendiente: segundo tramo del tiempo ordinario (lunes después de Pentecostés → 30 de noviembre).

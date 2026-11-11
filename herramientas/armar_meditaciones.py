@@ -111,6 +111,62 @@ MAYO = [
     ('Stella Matutina', 'Estrella de la mañana', 'Morning Star'),
 ]
 
+# Meditaciones sobre la doctrina cristiana (Newman, tercera parte). nw-dNN en el orden del libro.
+DOCTRINA = {
+    1: ('Dios y el alma (1/3): Dios, felicidad del alma', 'God and the Soul (1/3): God the Blessedness of the Soul'),
+    2: ('Dios y el alma (2/3): Jesucristo, el mismo ayer y hoy', 'God and the Soul (2/3): Jesus Christ Yesterday and To-day'),
+    3: ('Dios y el alma (3/3): Un acto de amor', 'God and the Soul (3/3): An Act of Love'),
+    4: ('El pecado (1/7): Contra Ti solo pequé', 'Sin (1/7): Against Thee Only Have I Sinned'),
+    5: ('El pecado (2/7): Contra Ti solo pequé', 'Sin (2/7): Against Thee Only Have I Sinned'),
+    6: ('El pecado (3/7): Los efectos del pecado', 'Sin (3/7): The Effects of Sin'),
+    7: ('El pecado (4/7): El mal del pecado', 'Sin (4/7): The Evil of Sin'),
+    8: ('El pecado (5/7): La gravedad del pecado', 'Sin (5/7): The Heinousness of Sin'),
+    9: ('El pecado (6/7): La esclavitud del pecado', 'Sin (6/7): The Bondage of Sin'),
+    10: ('El pecado (7/7): Todo pecado tiene su castigo', 'Sin (7/7): Every Sin has its Punishment'),
+    11: ('El poder de la Cruz', 'The Power of the Cross'),
+    12: ('La Resurrección (1/3): Templos del Espíritu Santo', 'The Resurrection (1/3): The Temples of the Holy Ghost'),
+    13: ('La Resurrección (2/3): Solo Dios', 'The Resurrection (2/3): God Alone'),
+    14: ('La Resurrección (3/3): La paciencia de Jesús', 'The Resurrection (3/3): The Forbearance of Jesus'),
+    15: ('Dios con nosotros (1/3): La cercanía de Jesús', 'God with Us (1/3): The Familiarity of Jesus'),
+    16: ('Dios con nosotros (2/3): Jesús, el Dios escondido', 'God with Us (2/3): Jesus the Hidden God'),
+    17: ('Dios con nosotros (3/3): Jesús, luz del alma', 'God with Us (3/3): Jesus the Light of the Soul'),
+    18: ('Dios, que basta para todo', 'God All-Sufficient'),
+    19: ('Solo Dios es inmutable', 'God Alone Unchangeable'),
+    20: ('Dios es amor', 'God is Love'),
+    21: ('La santidad de Dios', 'The Sanctity of God'),
+    22: ('Los cuarenta días (1/4): El reino de Dios', 'The Forty Days’ Teaching (1/4): The Kingdom of God'),
+    23: ('Los cuarenta días (2/4): Abandono en la voluntad de Dios', 'The Forty Days’ Teaching (2/4): Resignation to God’s Will'),
+    24: ('Los cuarenta días (3/4): La despedida del Señor', 'The Forty Days’ Teaching (3/4): Our Lord’s Parting with His Apostles'),
+    25: ('Los cuarenta días (4/4): Los caminos de Dios no son los nuestros', 'The Forty Days’ Teaching (4/4): God’s Ways not our Ways'),
+    26: ('La Ascensión (1/4): Subió', 'The Ascension (1/4): He Ascended'),
+    27: ('La Ascensión (2/4): Subió al cielo', 'The Ascension (2/4): He Ascended into Heaven'),
+    28: ('La Ascensión (3/4): Nuestro Abogado en el cielo', 'The Ascension (3/4): Our Advocate Above'),
+    29: ('La Ascensión (4/4): Nuestro Abogado en el cielo', 'The Ascension (4/4): Our Advocate Above'),
+    30: ('El Paráclito (1/4): Vida de todas las cosas', 'The Paraclete (1/4): The Life of All Things'),
+    31: ('El Paráclito (2/4): Vida de la Iglesia', 'The Paraclete (2/4): The Life of the Church'),
+    32: ('El Paráclito (3/4): Vida de mi alma', 'The Paraclete (3/4): The Life of my Soul'),
+    33: ('El Paráclito (4/4): Fuente del amor', 'The Paraclete (4/4): The Fount of Love'),
+    34: ('El santo Sacrificio (1/3): La Misa', 'The Holy Sacrifice (1/3): The Mass'),
+    35: ('El santo Sacrificio (2/3): La Comunión', 'The Holy Sacrifice (2/3): Holy Communion'),
+    36: ('El santo Sacrificio (3/3): El alimento del alma', 'The Holy Sacrifice (3/3): The Food of the Soul'),
+    37: ('El Sagrado Corazón', 'The Sacred Heart'),
+    38: ('La perfección infinita de Dios', 'The Infinite Perfection of God'),
+    39: ('El conocimiento infinito de Dios', 'The Infinite Knowledge of God'),
+    40: ('La providencia de Dios', 'The Providence of God'),
+    41: ('Dios es todo en todos', 'God is All in All'),
+    42: ('Dios, perfección incomunicable', 'God the Incommunicable Perfection'),
+    43: ('Dios comunicado a nosotros', 'God Communicated to Us'),
+    44: ('Dios, único sostén para la eternidad', 'God the Sole Stay for Eternity'),
+    45: ('Conclusión: «Escribo con la muerte a la vista»', 'Conclusion: ‘I write in the direct view of death’'),
+}
+# Tiempo pascual: del Domingo de Pascua a Pentecostés, en los días libres (no mayo)
+SERIE_PASCUA = [12, 13, 14, 15, 16, 17, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 18, 19, 20, 21]
+# Corpus Christi (domingo, en Argentina) y Sagrado Corazón: días respecto de la Pascua
+FIESTAS = {63: 34, 64: 35, 65: 36, 68: 37}
+# Tiempo ordinario, primer tramo: del 9 de enero al martes antes de Ceniza
+# (el segundo tramo, de Pentecostés al 30 de noviembre, queda para Chesterton y otros)
+SERIE_ORDINARIO = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 38, 39, 40, 41, 42, 43, 44, 45]
+
 # Estrofas de A Christmas Carol: (cuántos trozos tiene, título en español, título en inglés)
 ESTROFAS = [
     (5, 'Primera estrofa: El fantasma de Marley', "Stave One: Marley's Ghost"),
@@ -219,7 +275,20 @@ def main():
         nw(ident, 'Mes de María', tit + es_t, tit + en_t, k < 31)
         fechas['05-%02d' % k] = ident
 
-    salida = {'obras': OBRAS, 'textos': textos, 'fechas': fechas, 'pascua': pascua}
+    # Doctrina cristiana (Newman): series de Pascua y tiempo ordinario, más Corpus y Sagrado Corazón
+    def doc(k, tiempo):
+        ident = 'nw-d%02d' % k
+        nw(ident, tiempo, DOCTRINA[k][0], DOCTRINA[k][1], False)
+        return ident
+    series = [
+        {'nombre': 'pascua', 'tramos': [[0, 49]], 'textos': [doc(k, 'Tiempo pascual') for k in SERIE_PASCUA]},
+        {'nombre': 'ordinario-enero', 'tramos': [['01-09', -47]],
+         'textos': [doc(k, 'Tiempo ordinario') for k in SERIE_ORDINARIO]},
+    ]
+    for d, k in FIESTAS.items():
+        pascua[str(d)] = doc(k, 'Sagrado Corazón' if k == 37 else 'Corpus Christi')
+
+    salida = {'obras': OBRAS, 'textos': textos, 'fechas': fechas, 'pascua': pascua, 'series': series}
     with open(os.path.join(BASE, 'meditaciones.json'), 'w', encoding='utf-8') as f:
         json.dump(salida, f, ensure_ascii=False, separators=(',', ':'))
     print('meditaciones.json: %d textos, %d fechas' % (len(textos), len(fechas)))
