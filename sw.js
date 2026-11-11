@@ -1,6 +1,6 @@
 // Guarda la app en el celular para que funcione sin conexión.
 // Cambiar VERSION cada vez que se actualizan las lecturas o la página.
-const VERSION = 'lecturas-v22';
+const VERSION = 'lecturas-v23';
 const ARCHIVOS = ['./', './index.html', './lecturas.json', './meditaciones.json', './manifest.json', './icono-mosaico-192.png', './icono-mosaico-512.png', './apple-touch-icon-mosaico.png'];
 const ESPERA_RED = 3000; // ms: si la red no responde en este tiempo, se usa lo guardado
 
