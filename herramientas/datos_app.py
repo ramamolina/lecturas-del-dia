@@ -127,6 +127,11 @@ for fecha in sorted(r):
     if d.weekday() == 6:
         dias[fecha]['y'] = ciclo(d)  # ciclo dominical A, B o C
 
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from semana_referencia import agregar  # noqa: E402
+agregar(dias)  # referencia de la semana en los días de santos, fiestas y solemnidades
+
 datos = {
     'desde': min(dias), 'hasta': max(dias),
     'dias': dias,

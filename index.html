@@ -206,6 +206,7 @@ h1 .anio { color: var(--muted); font-weight: 400; }
   margin: 0;
   text-wrap: balance;
 }
+.feria { margin: 0; color: var(--muted); font-size: 0.95rem; }
 .memorias { margin: 0; color: var(--muted); font-size: 0.92rem; }
 
 /* Lecturas */
@@ -409,6 +410,7 @@ img { max-width: 100%; }
   <section class="celebracion" id="celebracion" aria-live="polite">
     <span class="color" id="color">Verde</span>
     <p class="nombre" id="nombre">Cargando lecturas…</p>
+    <p class="feria" id="feria" hidden></p>
     <p class="memorias" id="memorias" hidden></p>
   </section>
 
@@ -556,7 +558,9 @@ img { max-width: 100%; }
   var medMensaje = '';
 
   function armarMensaje(f, dia) {
-    var partes = ['*Lecturas del ' + larga(f) + '*', '_' + dia.c + (dia.y ? ' · Ciclo ' + dia.y : '') + '_', ''];
+    var partes = ['*Lecturas del ' + larga(f) + '*', '_' + dia.c + (dia.y ? ' · Ciclo ' + dia.y : '') + '_'];
+    if (dia.f) partes.push(dia.f);
+    partes.push('');
     dia.l.forEach(function (l) {
       partes.push('*' + l[0] + '* — ' + l[1]);
       partes.push(l[2]);
@@ -646,6 +650,7 @@ img { max-width: 100%; }
       app.setAttribute('data-color', 'verde');
       $('color').hidden = true;
       $('nombre').textContent = 'Sin lecturas cargadas';
+      $('feria').hidden = true;
       $('memorias').hidden = true;
       lista.appendChild(aviso(
         'Todavía no están cargadas las lecturas de esta fecha',
@@ -675,6 +680,9 @@ img { max-width: 100%; }
       $('color').appendChild(precepto);
     }
     $('nombre').textContent = dia.c;
+    // Santos, fiestas y solemnidades: también la semana del calendario litúrgico, como referencia
+    $('feria').textContent = dia.f || '';
+    $('feria').hidden = !dia.f;
     if (dia.m && dia.m.length) {
       $('memorias').textContent = 'Memoria libre: ' + dia.m.join(' · ');
       $('memorias').hidden = false;
